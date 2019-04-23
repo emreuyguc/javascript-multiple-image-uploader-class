@@ -1,0 +1,74 @@
+<html>
+<head>
+	<script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+	<link href="multipleImgUploader/multi-image-uploader.css" rel="stylesheet">
+	<script src="multipleImgUploader/multi-image-uploader.js"></script>
+
+	<meta charset="UTF-8"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+</head>
+<body>
+
+
+	<form method="post" id="myForm" action="http://127.0.0.1/multipleImgUploader_Demo/upload.php" enctype="multipart/form-data">
+
+		<div id="uploadArea">
+		</div>
+		
+		<input type="text" name="isim">
+		<input type="file" multiple id="imageChooseBtn" >
+		
+		<select name="ilce">
+			<option value="istanbul">istanbul</option>
+		</select>
+		
+		<button type="submit">GÖNDER</button>
+		
+	</form>
+
+<div id="loading" style=" visibility: hidden;">Sending..</div>
+
+<div id="response">
+</div>
+<script>
+$(document).ajaxStart(function(){
+    $('#loading').show();
+ }).ajaxStop(function(){
+    $('#loading').hide();
+ });
+ 
+var myUploader = new multipleImageUploader;
+
+myUploader.uploadArea = '#uploadArea';
+myUploader.inputElement = '#imageChooseBtn';
+myUploader.validExtensions = ['jpg', 'jpeg', 'png'];
+myUploader.maxImageCount = 5;
+myUploader.maxImageMb = 2;
+myUploader.dataMode = 'form';
+
+myUploader.init();
+
+myUploader.bindFormSubmit('#myForm',function onClickSubmit(){
+	//before send data codes..
+	myUploader.sendDatas(
+		function success(data){
+			//for success callback
+			$('#response').html(data);
+			console.log(data);
+		},
+		function error(data){
+			//for error callback
+		}
+	);
+	
+});
+
+
+</script>
+
+</body>
+</html>
