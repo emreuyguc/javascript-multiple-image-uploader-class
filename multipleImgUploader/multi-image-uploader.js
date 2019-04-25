@@ -3,14 +3,14 @@
 AUTHOR : EMRE UTKU UYGUÇ
 UPDATE : 24.04.2019
 
-minor changes
+fixed maximum size problem
 */
 
 class multipleImageUploader{
 
 	constructor(){
 		this.ImageCountErrorMsg = 'Uyarı : Bazı Resimler Yüklenemedi . Seçebileceğiniz Maksimum Resim Sayısı : ';
-		this.ImageSizeErrorMsg = ' Adlı fotoğraf izin verilen boyutu aşıyor. Maksimum '+ this.maxImageMb +' mb boyutunda olabilir. ';
+		this.ImageSizeErrorMsg = ' Adlı fotoğraf izin verilen boyutu aşıyor. Maksimum $maxSize mb boyutunda olabilir. ';
 		this.AreaHeaderText = 'Resimler';
 		this.ImageExtErrorMsg = ' Adlı resminiz izin verilen bir formatta değil';
 	}
@@ -59,7 +59,7 @@ class multipleImageUploader{
 	
 	init(){
 		var self = this;
-		
+		self.maxImageMb = self.maxImageMb * 1024 * 1024;
 		$(this.inputElement).change( function(e){
 			self.formData = new FormData();
 			var images = e.target.files;
@@ -74,7 +74,7 @@ class multipleImageUploader{
 					</div>\
 				</div>\
 				');
-
+				
 				for (var i = 0; i < images.length; i++) {
 					if(typeof self.maxImageCount != 'undefined' & i == self.maxImageCount ){
 						self.showMessage('info',self.ImageCountErrorMsg  + self.maxImageCount );
@@ -85,7 +85,6 @@ class multipleImageUploader{
 						var imageSize = images[i].size;
 						var isValidExt = self.validExtensions.indexOf(imageExt) > -1;
 						if (isValidExt) {
-							self.maxImageMb *= 1024 * 1024;
 							if (imageSize <= self.maxImageMb) {
 								var reader = new FileReader();
 								reader.onload = function(e) {
@@ -114,7 +113,7 @@ class multipleImageUploader{
 								self.formData.append('images[]', images[i]);
 							} 
 							else{
-								self.showMessage('danger',  images[i].name + self.ImageSizeErrorMsg);
+								self.showMessage('danger',  images[i].name + self.ImageSizeErrorMsg.replace('$maxSize',self.maxImageMb / Math.pow(1024,2)));
 							}
 						}
 						else{
